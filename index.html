@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Corretor Ortográfico</title>
+</head>
+<body>
+    <h1>Corretor Ortográfico</h1>
+
+    <label for="textoComErros">Digite o texto com erros:</label>
+    <textarea id="textoComErros" rows="4" cols="50"></textarea>
+    
+    <button onclick="corrigirTexto()">Corrigir Texto</button>
+
+    <h2>Texto Corrigido</h2>
+    <p id="textoCorrigido"></p>
+
+    <script>
+        async function corrigirTexto() {
+            var textoComErros = document.getElementById("textoComErros").value;
+            var textoCorrigido = await corrigirErros(textoComErros);
+            document.getElementById("textoCorrigido").textContent = textoCorrigido;
+        }
+
+        async function corrigirErros(texto) {
+            try {
+                const response = await fetch("/api/corrigir", {
+                    method: "POST",
+                    body: JSON.stringify({ text: texto }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const data = await response.json();
+                return data.textoCorrigido;
+            } catch (error) {
+                console.error('Erro ao corrigir texto:', error);
+                return 'Erro ao corrigir texto.';
+            }
+        }
+    </script>
+</body>
+</html>
